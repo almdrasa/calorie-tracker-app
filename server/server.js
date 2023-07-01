@@ -61,6 +61,7 @@ app.get("/records", (req, res) => {
     sql = `SELECT * FROM calorie_records WHERE date = ?`;
     db.all(sql, [req.query.date], (err, rows) => {
       if (err) {
+        res.status(500).send(err.message);
         return console.error(err.message);
       }
       res.json(rows);
@@ -69,6 +70,7 @@ app.get("/records", (req, res) => {
     sql = "SELECT * FROM calorie_records";
     db.all(sql, [], (err, rows) => {
       if (err) {
+        res.status(500).send(err.message);
         return console.error(err.message);
       }
       res.json(rows);
@@ -87,6 +89,7 @@ app.get("/records/:id", (req, res) => {
   let sql = "SELECT * FROM calorie_records WHERE id = ?";
   db.get(sql, [id], (err, row) => {
     if (err) {
+      res.status(500).send(err.message);
       return console.error(err.message);
     }
     // If the query found a record, row will be an object representing that record,
@@ -117,9 +120,10 @@ app.post("/records", (req, res) => {
     "INSERT INTO calorie_records (date, meal, content, calories) VALUES (?, ?, ?, ?)";
   db.run(sql, [date, meal, content, calories], (err) => {
     if (err) {
+      res.status(500).send(err.message);
       return console.error(err.message);
     }
-    res.send({ message: "Record inserted.", id: this.lastID });
+    res.status(200).send({ message: "Record inserted.", id: this.lastID });
   });
 });
 
@@ -143,8 +147,8 @@ app.put("/records/:id", (req, res) => {
     "UPDATE calorie_records SET date = ?, meal = ?, content = ?, calories = ? WHERE id = ?";
   db.run(sql, [date, meal, content, calories, id], (err) => {
     if (err) {
-      console.error(err.message);
-      return res.status(401).send(error.message);
+      res.status(500).send(err.message);
+      return console.error(err.message);
     }
     res.send("Record updated.");
   });
