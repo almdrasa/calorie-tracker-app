@@ -1,20 +1,22 @@
 {
   "name": "calorie-tracker-app",
+  "workspaces": [
+    "packages/*"
+  ],
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "install:client": "npm install --prefix client",
-    "install:server": "npm install --prefix server",
-    "install": "npm-run-all --sequential install:server install:client",
-    "start:client": "npm start --prefix client",
-    "start:server": "npm start --prefix server",
-    "start": "npm-run-all --sequential start:server start:client"
+    "install": "lerna exec -- npm install",
+    "start:client": "lerna run --scope client start --stream",
+    "start:server": "lerna run --scope server start --stream",
+    "start": "concurrently --kill-others \"npm run start:server\" \"npm run start:client\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "npm-run-all": "^4.1.5"
+    "concurrently": "^8.2.0",
+    "lerna": "^7.1.1"
   }
 }
