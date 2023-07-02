@@ -81,7 +81,7 @@ app.get("/records", (req, res) => {
         res.status(500).send(err.message);
         return console.error(err.message);
       }
-      res.json(rows);
+      res.json({ result: rows });
     });
   } else {
     sql = "SELECT * FROM calorie_records";
@@ -90,7 +90,7 @@ app.get("/records", (req, res) => {
         res.status(500).send(err.message);
         return console.error(err.message);
       }
-      res.json(rows);
+      res.json({ result: rows });
     });
   }
 });
