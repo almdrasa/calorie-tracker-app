@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3").verbose();
+const cors = require("cors");
 const app = express();
 const generateRecords = require("./data-generator");
 
@@ -43,9 +44,25 @@ const setupDb = () => {
 
 setupDb();
 
+const domainWhiteList = JSON.parse(process.env.DOMAIN_WHITELIST);
+console.log(domainWhiteList);
+
+// Allow receiving requests from React server
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || domainWhiteList.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
+app.use(cors(corsOptions));
+
 // Server start and endpoints
-app.listen(3000, () => {
-  console.log("Server running on port 3000");
+app.listen(process.env.PORT, () => {
+  console.log(`Server running on port ${process.env.PORT}`);
 });
 
 /**
