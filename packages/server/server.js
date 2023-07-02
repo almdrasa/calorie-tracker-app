@@ -143,13 +143,47 @@ app.put("/records/:id", (req, res) => {
     return res.status(400).send("Please provide all record fields.");
   }
 
-  let sql =
-    "UPDATE calorie_records SET date = ?, meal = ?, content = ?, calories = ? WHERE id = ?";
-  db.run(sql, [date, meal, content, calories, id], (err) => {
+  let sql = "SELECT * FROM calorie_records WHERE id = ?";
+  db.get(sql, [id], (err, row) => {
     if (err) {
       res.status(500).send(err.message);
       return console.error(err.message);
     }
-    res.send("Record updated.");
+    if (row) {
+      sql = `UPDATE calorie_records SET date = ?, meal = ?, content = ?, calories = ? WHERE id = ?`;
+      db.run(sql, [date, meal, content, calories, id], function (err) {
+        if (err) {
+          res.status(500).send(err.message);
+          return console.error(err.message);
+        }
+        res.send(`Record with ID ${id} updated.`);
+      });
+    } else {
+      res.status(404).send("Record not found");
+    }
+  });
+});
+
+app.delete("/records/:id", (req, res) => {
+  const { id } = req.params;
+
+  let sql = "SELECT * FROM calorie_records WHERE id = ?";
+  db.get(sql, [id], (err, row) => {
+    if (err) {
+      res.status(500).send(err.message);
+      return console.error(err.message);
+    }
+    if (row) {
+      sql = "DELETE FROM calorie_records WHERE id = ?";
+      db.run(sql, [id], (err) => {
+        if (err) {
+          res.status(500).send(err.message);
+          return console.error(err.message);
+        }
+        res.send(`Record with ID ${id} deleted.`);
+      });
+    } else {
+      res.status(404).send("Record not found");
+    }
   });
 });
