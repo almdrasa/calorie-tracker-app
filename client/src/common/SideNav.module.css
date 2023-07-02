@@ -1,0 +1,33 @@
+.nav {
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  background-color: var(--theme-color-dark);
+  height: 100%;
+  padding: 10px;
+  gap: 10px;
+}
+
+.title {
+  color: var(--theme-background-light);
+  padding: 20px 10px;
+  margin: 0;
+  border-bottom: 1px solid var(--theme-background-light);
+}
+
+.nav a {
+  display: block;
+  color: var(--theme-background-ultralight);
+  font-size: 24px;
+  font-weight: 400;
+  text-decoration: none;
+  padding: 10px;
+}
+
+.nav a:hover {
+  color: var(--theme-background-normal);
+}
+
+.nav a.active {
+  color: var(--theme-color-light);
+}

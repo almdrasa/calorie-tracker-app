@@ -1,0 +1,28 @@
+.primary {
+  background-color: var(--theme-color-normal);
+  color: var(--theme-background-light);
+  display: block;
+  border: none;
+  border-radius: 15px;
+  padding: 10px;
+  cursor: pointer;
+  width: 200px;
+}
+
+.secondary {
+  background-color: var(--theme-background-light);
+  border: 1px solid var(--theme-background-normal);
+  color: var(--theme-color-normal);
+  display: block;
+  border-radius: 15px;
+  padding: 10px;
+  cursor: pointer;
+  width: 200px;
+}
+
+button:disabled {
+  background-color: lightgray;
+  border-width: 0;
+  color: gray;
+  pointer-events: none;
+}

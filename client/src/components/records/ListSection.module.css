@@ -1,0 +1,19 @@
+.listing-picker-label {
+  color: var(--theme-color-dark);
+  line-height: 40px;
+  font-weight: 500;
+}
+
+.listing-picker-input {
+  margin: 20px;
+  background-color: var(--theme-background-light);
+  color: var(--theme-color-normal);
+  border: 1px solid var(--theme-color-normal);
+  padding: 10px;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 225px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  box-sizing: border-box;
+}

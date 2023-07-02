@@ -1,0 +1,24 @@
+label {
+  color: var(--theme-color-dark);
+  margin-right: 30px;
+  margin-bottom: 10px;
+}
+
+.form-input {
+  background-color: var(--theme-background-light);
+  color: var(--theme-color-normal);
+  border: 1px solid var(--theme-color-normal);
+  padding: 10px;
+  border-radius: 5px;
+  width: 100%;
+  min-width: 255px;
+  font-size: 16px;
+  display: block;
+  box-sizing: border-box;
+}
+
+.error {
+  border: 1px solid maroon;
+  background-color: var(--theme-background-light);
+  color: maroon;
+}
