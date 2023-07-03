@@ -19,7 +19,7 @@ const db = new sqlite3.Database(":memory:", (err) => {
 // Create table and populate with initial data
 const setupDb = () => {
   db.run(
-    "CREATE TABLE calorie_records (id INTEGER PRIMARY KEY AUTOINCREMENT, date text, meal text, content text, calories integer)",
+    "CREATE TABLE calorie_records (id INTEGER PRIMARY KEY AUTOINCREMENT, r_date text, r_meal text, r_food text, r_cal integer)",
     (err) => {
       if (err) {
         console.log(err);
@@ -29,7 +29,7 @@ const setupDb = () => {
         const data = generateRecords();
         console.log("Inserting random data into table");
         let stmt = db.prepare(
-          "INSERT INTO calorie_records (date, meal, content, calories) VALUES (?, ?, ?, ?)"
+          "INSERT INTO calorie_records (r_date, r_meal, r_food, r_cal) VALUES (?, ?, ?, ?)"
         );
         for (let i = 0; i < data.length; i++) {
           const { date, meal, content, calories } = data[i];
@@ -75,7 +75,7 @@ app.get("/records", (req, res) => {
   console.log("Received 'List' request");
   let sql;
   if (req.query.date) {
-    sql = `SELECT * FROM calorie_records WHERE date = ?`;
+    sql = `SELECT * FROM calorie_records WHERE r_date = ?`;
     db.all(sql, [req.query.date], (err, rows) => {
       if (err) {
         res.status(500).send(err.message);
@@ -126,16 +126,16 @@ app.get("/records/:id", (req, res) => {
  * Example POST /records (with request body filled)
  */
 app.post("/records", (req, res) => {
-  const { date, meal, content, calories } = req.body;
+  const { r_date, r_meal, r_food, r_cal } = req.body;
 
   // Simple validation
-  if (!date || !meal || !content || !calories) {
+  if (!r_date || !r_meal || !r_food || !r_cal) {
     return res.status(400).send("Please provide all record fields.");
   }
 
   let sql =
-    "INSERT INTO calorie_records (date, meal, content, calories) VALUES (?, ?, ?, ?)";
-  db.run(sql, [date, meal, content, calories], (err) => {
+    "INSERT INTO calorie_records (r_date, r_meal, r_food, r_cal) VALUES (?, ?, ?, ?)";
+  db.run(sql, [r_date, r_meal, r_food, r_cal], function (err) {
     if (err) {
       res.status(500).send(err.message);
       return console.error(err.message);
@@ -152,11 +152,11 @@ app.post("/records", (req, res) => {
  * Example: PUT /records/300 (with request body filled)
  */
 app.put("/records/:id", (req, res) => {
-  const { date, meal, content, calories } = req.body;
+  const { r_date, r_meal, r_food, r_cal } = req.body;
   const { id } = req.params;
 
   // Simple validation
-  if (!date || !meal || !content || !calories) {
+  if (!r_date || !r_meal || !r_food || !r_cal) {
     return res.status(400).send("Please provide all record fields.");
   }
 
@@ -167,13 +167,13 @@ app.put("/records/:id", (req, res) => {
       return console.error(err.message);
     }
     if (row) {
-      sql = `UPDATE calorie_records SET date = ?, meal = ?, content = ?, calories = ? WHERE id = ?`;
-      db.run(sql, [date, meal, content, calories, id], function (err) {
+      sql = `UPDATE calorie_records SET r_date = ?, r_meal = ?, r_food = ?, r_cal = ? WHERE id = ?`;
+      db.run(sql, [r_date, r_meal, r_food, r_cal, id], function (err) {
         if (err) {
           res.status(500).send(err.message);
           return console.error(err.message);
         }
-        res.send(`Record with ID ${id} updated.`);
+        res.send({ message: "Record updated.", id: id });
       });
     } else {
       res.status(404).send("Record not found");
@@ -197,7 +197,7 @@ app.delete("/records/:id", (req, res) => {
           res.status(500).send(err.message);
           return console.error(err.message);
         }
-        res.send(`Record with ID ${id} deleted.`);
+        res.send({ message: "Record deleted.", id: id });
       });
     } else {
       res.status(404).send("Record not found");
