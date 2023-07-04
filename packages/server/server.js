@@ -101,6 +101,7 @@ app.get("/records", (req, res) => {
  * Example: GET /records/300 => returns the details of the record with id == 300
  */
 app.get("/records/:id", (req, res) => {
+  console.log("Received 'Detail' request");
   const { id } = req.params;
 
   let sql = "SELECT * FROM calorie_records WHERE id = ?";
@@ -126,6 +127,7 @@ app.get("/records/:id", (req, res) => {
  * Example POST /records (with request body filled)
  */
 app.post("/records", (req, res) => {
+  console.log("Received 'Create' request");
   const { r_date, r_meal, r_food, r_cal } = req.body;
 
   // Simple validation
@@ -152,6 +154,7 @@ app.post("/records", (req, res) => {
  * Example: PUT /records/300 (with request body filled)
  */
 app.put("/records/:id", (req, res) => {
+  console.log("Received 'Update' request");
   const { r_date, r_meal, r_food, r_cal } = req.body;
   const { id } = req.params;
 
@@ -182,6 +185,7 @@ app.put("/records/:id", (req, res) => {
 });
 
 app.delete("/records/:id", (req, res) => {
+  console.log("Received 'Delete' request");
   const { id } = req.params;
 
   let sql = "SELECT * FROM calorie_records WHERE id = ?";
