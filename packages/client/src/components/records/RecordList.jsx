@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { AppContext } from "@root/AppContext";
 import { Record } from "./Record";
 import styles from "./RecordList.module.css";
+import { TextContent } from "@root/common";
 
 export function RecordList(props) {
   const { totalCalories } = useContext(AppContext);
@@ -17,7 +18,7 @@ export function RecordList(props) {
       ))}
     </ul>
   ) : (
-    <div className={styles.placeholder}>No records found for this date</div>
+    <TextContent value="No records found for this date" />
   );
 
   return (

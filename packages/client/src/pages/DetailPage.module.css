@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  max-width: 768px;
+  margin: auto;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  color: var(--theme-color-normal);
+  border-bottom: 1px solid var(--theme-color-dark);
+}
+
+.item:last-child {
+  border-bottom: none;
+}

@@ -102,7 +102,7 @@ export function Form(props) {
     // {date: {value: '01-03-2021', valid: false}, meal: ...}
     // {date: '01-03-2021', meal: 'Breakfast', ...}
     props.onFormSubmit({
-      date: currentDate,
+      date: currentDateStr,
       meal: mealRef.current.value,
       content: contentRef.current.value,
       calories: Number(caloriesRef.current.value),
