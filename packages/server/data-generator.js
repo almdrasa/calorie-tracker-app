@@ -46,9 +46,15 @@ function generateRecords() {
   for (let i = 1; i <= GENERATED_DAYS; i++) {
     const date = new Date();
     date.setDate(date.getDate() - 2 * i);
-    const dateStr = `${date.getUTCFullYear()}-${
+    const dateStr = `${date.getUTCFullYear()}-${(
       date.getUTCMonth() + 1
-    }-${date.getUTCDate()}`;
+    ).toLocaleString("en-US", {
+      minimumIntegerDigits: 2,
+      useGrouping: false,
+    })}-${date.getUTCDate().toLocaleString("en-US", {
+      minimumIntegerDigits: 2,
+      useGrouping: false,
+    })}`;
     MEAL_OPTIONS.forEach((mealOption) => {
       for (let r = 0; r < RECORDS_PER_MEAL; r++) {
         result.push({
