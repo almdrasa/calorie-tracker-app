@@ -1,123 +1,53 @@
-import { useEffect, useState } from "react";
-import Modal from "react-modal";
-import { ListSection } from "@components/records";
-import { Form } from "@components/edit";
+import { useContext } from "react";
 import styles from "./TrackPage.module.css";
-import { getDateFromString } from "@root/utils";
-
-const LOCAL_STORAGE_KEY = "calorieRecords";
+import { useLoadData } from "@root/utils/hooks";
+import { Link } from "react-router-dom";
+import { RecordList } from "@components/records";
+import { TextContent } from "@root/common";
+import { AppContext } from "@root/AppContext";
 
 export function TrackPage() {
-  const [records, setRecords] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const { currentDateStr, setCurrentDate } = useContext(AppContext);
 
-  async function save(record) {
-    try {
-      const response = await fetch("http://localhost:3000/records", {
-        method: "POST",
-        body: JSON.stringify({
-          r_date: record.date,
-          r_meal: record.meal,
-          r_food: record.content,
-          r_cal: record.calories,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Failed to create new record");
-      }
-      loadRecords();
-    } catch (error) {
-      setError(error.message);
-    }
+  const [records, loading, error, refreshData] = useLoadData(
+    `http://localhost:3000/records?date=${currentDateStr}`
+  );
+
+  const dateChangeHandler = (event) => {
+    setCurrentDate(event.target.value);
+  };
+
+  let content = <RecordList records={records} refresh={refreshData} />;
+
+  if (error) {
+    content = <TextContent value={error} />;
   }
 
-  async function loadRecords() {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch("http://localhost:3000/records");
-      console.log(response);
-      if (response.status === 404) {
-        throw new Error("Data not found");
-      }
-      if (!response.ok) {
-        throw new Error("Unknown error");
-      }
-
-      const data = await response.json();
-      setRecords(
-        data.result.map((record) => ({
-          id: record.id,
-          date: getDateFromString(record.r_date),
-          meal: record.r_meal,
-          content: record.r_food,
-          calories: record.r_cal,
-        }))
-      );
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
+  if (loading) {
+    content = <TextContent value="Loading..." />;
   }
-
-  useEffect(() => {
-    loadRecords();
-  }, []);
-
-  const modalStyles = {
-    content: {
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-      border: "none", // Remove the border
-      padding: "0px", // Remove padding
-      borderRadius: "var(--theme-border-radius-smooth)",
-    },
-    overlay: {
-      backgroundColor: "rgba(0,0,0,0.5)",
-    },
-  };
-
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const formSubmitHandler = (record) => {
-    save(record);
-
-    handleCloseModal();
-  };
 
   return (
-    <div className="App">
+    <div>
       <h1 className={styles.title}>Calorie Tracker</h1>
-      <Modal
-        isOpen={isModalOpen}
-        onRequestClose={handleCloseModal}
-        contentLabel="Modal"
-        style={modalStyles}
-      >
-        <Form onFormSubmit={formSubmitHandler} onCancel={handleCloseModal} />
-      </Modal>
-      {records && (
-        <ListSection allRecords={records} isLoading={loading} error={error} />
-      )}
-      <button className={styles["open-modal-btn"]} onClick={handleOpenModal}>
-        Track food
-      </button>
+      <div className={styles["list-header-wrapper"]}>
+        <div className={styles["list-picker"]}>
+          <label className={styles["list-picker-label"]} htmlFor="listingDate">
+            Select date
+          </label>
+          <input
+            id="listingDate"
+            type="date"
+            className={styles["list-picker-input"]}
+            value={currentDateStr}
+            onChange={dateChangeHandler}
+          />
+        </div>
+        <Link className={styles["add-btn"]} to="create">
+          Track food
+        </Link>
+      </div>
+      {content}
     </div>
   );
 }

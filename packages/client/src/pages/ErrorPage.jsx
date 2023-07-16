@@ -1,31 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigateAfterCountDown } from "@root/utils/hooks";
+import { Link } from "react-router-dom";
 
-const REDIRECT_COUNT = 10;
-const COUNT_DOWN_INTERVAL = 1000;
 const HOME_LINK = "/";
 
 export function ErrorPage() {
-  const [counter, setCounter] = useState(REDIRECT_COUNT);
-  const intervalHandler = useRef();
-  const navigateToHome = useNavigate();
-
-  useEffect(() => {
-    if (counter === 0) {
-      clearInterval(intervalHandler.current);
-      navigateToHome(HOME_LINK);
-    }
-  }, [counter]);
-
-  useEffect(() => {
-    intervalHandler.current = setInterval(() => {
-      setCounter((prev) => prev - 1);
-    }, COUNT_DOWN_INTERVAL);
-
-    return () => {
-      clearInterval(intervalHandler.current);
-    };
-  }, []);
+  const counter = useNavigateAfterCountDown(10, HOME_LINK);
 
   return (
     <>

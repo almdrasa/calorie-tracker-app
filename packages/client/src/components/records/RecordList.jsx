@@ -12,7 +12,7 @@ export function RecordList(props) {
       {props.records.map((record) => (
         <li className={styles["list-item"]} key={record.id}>
           <Link to={`${record.id}`}>
-            <Record {...record} />
+            <Record {...record} refresh={props.refresh} />
           </Link>
         </li>
       ))}

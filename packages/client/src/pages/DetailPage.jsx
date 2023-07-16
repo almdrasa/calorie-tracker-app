@@ -1,44 +1,22 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import styles from "./DetailPage.module.css";
-import { getDateFromString } from "@root/utils";
-import { useEffect, useState } from "react";
 import { TextContent } from "@root/common";
+import { useLoadData } from "@root/utils/hooks";
 
 export function DetailPage() {
   const params = useParams();
-  const [detail, setDetail] = useState();
-  const [error, setError] = useState();
+  const [detail, _, error] = useLoadData(
+    `http://localhost:3000/records/${params.recordId}`,
+    "single"
+  );
 
-  async function loadDetails(id) {
-    try {
-      const response = await fetch(`http://localhost:3000/records/${id}`);
-      if (!response.ok) {
-        throw new Error("Failed to load record details");
-      }
-      const data = await response.json();
-      setDetail({
-        date: getDateFromString(data.r_date).toLocaleDateString(),
-        meal: data.r_meal,
-        content: data.r_food,
-        calories: data.r_cal,
-      });
-    } catch (error) {
-      setError(error.message);
-    }
-  }
-
-  useEffect(() => {
-    loadDetails(params.recordId);
-  }, []);
-
-  return error ? (
-    <TextContent value={error} />
-  ) : (
-    detail && (
+  let content = <TextContent value={error} />;
+  if (!error) {
+    content = detail && (
       <div className={styles.container}>
         <div className={styles.item}>
           <p>Date:</p>
-          <p>{detail.date}</p>
+          <p>{detail.date.toLocaleString()}</p>
         </div>
         <div className={styles.item}>
           <p>Meal:</p>
@@ -53,6 +31,13 @@ export function DetailPage() {
           <p>{detail.calories}</p>
         </div>
       </div>
-    )
+    );
+  }
+
+  return (
+    <>
+      {content}
+      <Link to="..">Back to List page</Link>
+    </>
   );
 }
